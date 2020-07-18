@@ -7,6 +7,7 @@ import kieker.common.record.flow.trace.operation.AfterOperationEvent;
 import kieker.common.record.flow.trace.operation.BeforeOperationEvent;
 import kieker.common.record.flow.trace.operation.CallOperationEvent;
 import kieker.common.record.misc.KiekerMetadataRecord;
+import kieker.common.record.system.CPUUtilizationRecord;
 import org.jqassistant.contrib.plugin.kieker.api.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,21 @@ public class KiekerHelper {
         recordDescriptor.setTimeOffset(record.getTimeOffset());
         recordDescriptor.setTimeUnit(record.getTimeUnit());
         recordDescriptor.setNumberOfRecords(record.getNumberOfRecords());
+    }
+
+    void createCpuUtilizationRecord(CPUUtilizationRecord cpuUtilizationRecord) {
+        CpuUtilizationMeasurementDescriptor cpuDescriptor = scannerContext.getStore().create(CpuUtilizationMeasurementDescriptor.class);
+        cpuDescriptor.setTimestamp(cpuUtilizationRecord.getTimestamp());
+        cpuDescriptor.setHostname(cpuUtilizationRecord.getHostname());
+        cpuDescriptor.setCpuID(cpuUtilizationRecord.getCpuID());
+        cpuDescriptor.setIdle(cpuUtilizationRecord.getIdle());
+        cpuDescriptor.setIrq(cpuUtilizationRecord.getIrq());
+        cpuDescriptor.setNice(cpuUtilizationRecord.getNice());
+        cpuDescriptor.setSystem(cpuUtilizationRecord.getSystem());
+        cpuDescriptor.setTotalUtilization(cpuUtilizationRecord.getTotalUtilization());
+        cpuDescriptor.setWait(cpuUtilizationRecord.getWait());
+
+        recordDescriptor.getMeasurements().add(cpuDescriptor);
     }
 
     void createTrace(TraceMetadata trace) {

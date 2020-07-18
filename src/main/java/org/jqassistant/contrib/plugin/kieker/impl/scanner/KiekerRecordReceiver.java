@@ -5,6 +5,7 @@ import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.flow.trace.TraceMetadata;
 import kieker.common.record.flow.trace.operation.AbstractOperationEvent;
 import kieker.common.record.misc.KiekerMetadataRecord;
+import kieker.common.record.system.*;
 
 /**
  * The record receiver delegates records from filesystem directory reader to
@@ -35,7 +36,17 @@ public class KiekerRecordReceiver implements IMonitoringRecordReceiver {
             kiekerHelper.createRecord((KiekerMetadataRecord) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof TraceMetadata) {
             kiekerHelper.createTrace((TraceMetadata) iMonitoringRecord);
-        } else if (iMonitoringRecord instanceof AbstractOperationEvent) {
+        } else if (iMonitoringRecord instanceof CPUUtilizationRecord) {
+            kiekerHelper.createCpuUtilizationRecord((CPUUtilizationRecord) iMonitoringRecord);
+        } /*else if (iMonitoringRecord instanceof DiskUsageRecord) {
+
+        } else if (iMonitoringRecord instanceof LoadAverageRecord) {
+
+        } else if (iMonitoringRecord instanceof MemSwapUsageRecord) {
+
+        } else if (iMonitoringRecord instanceof NetworkUtilizationRecord) {
+
+        }*/ else if (iMonitoringRecord instanceof AbstractOperationEvent) {
             kiekerHelper.createEvent((AbstractOperationEvent) iMonitoringRecord);
         }
         return true;
