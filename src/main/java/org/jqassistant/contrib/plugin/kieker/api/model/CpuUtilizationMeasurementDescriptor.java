@@ -1,10 +1,9 @@
 package org.jqassistant.contrib.plugin.kieker.api.model;
 
-import com.buschmais.jqassistant.plugin.common.api.model.DirectoryDescriptor;
 import com.buschmais.jqassistant.plugin.common.api.model.NamedDescriptor;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 
-@Label("CpuMeasurement")
+@Label("CpuUtilizationMeasurement")
 public interface CpuUtilizationMeasurementDescriptor extends NamedDescriptor, MeasurementDescriptor {
 
     void setCpuID(String cpuID);
