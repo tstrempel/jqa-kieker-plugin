@@ -7,7 +7,7 @@ import kieker.common.record.flow.trace.operation.AfterOperationEvent;
 import kieker.common.record.flow.trace.operation.BeforeOperationEvent;
 import kieker.common.record.flow.trace.operation.CallOperationEvent;
 import kieker.common.record.misc.KiekerMetadataRecord;
-import kieker.common.record.system.CPUUtilizationRecord;
+import kieker.common.record.system.*;
 import org.jqassistant.contrib.plugin.kieker.api.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,21 +54,6 @@ public class KiekerHelper {
         recordDescriptor.setTimeOffset(record.getTimeOffset());
         recordDescriptor.setTimeUnit(record.getTimeUnit());
         recordDescriptor.setNumberOfRecords(record.getNumberOfRecords());
-    }
-
-    void createCpuUtilizationRecord(CPUUtilizationRecord cpuUtilizationRecord) {
-        CpuUtilizationMeasurementDescriptor cpuDescriptor = scannerContext.getStore().create(CpuUtilizationMeasurementDescriptor.class);
-        cpuDescriptor.setTimestamp(cpuUtilizationRecord.getTimestamp());
-        cpuDescriptor.setHostname(cpuUtilizationRecord.getHostname());
-        cpuDescriptor.setCpuID(cpuUtilizationRecord.getCpuID());
-        cpuDescriptor.setIdle(cpuUtilizationRecord.getIdle());
-        cpuDescriptor.setIrq(cpuUtilizationRecord.getIrq());
-        cpuDescriptor.setNice(cpuUtilizationRecord.getNice());
-        cpuDescriptor.setSystem(cpuUtilizationRecord.getSystem());
-        cpuDescriptor.setTotalUtilization(cpuUtilizationRecord.getTotalUtilization());
-        cpuDescriptor.setWait(cpuUtilizationRecord.getWait());
-
-        recordDescriptor.getMeasurements().add(cpuDescriptor);
     }
 
     void createTrace(TraceMetadata trace) {
@@ -227,6 +212,89 @@ public class KiekerHelper {
             return matchResult.substring(0, matchResult.length() - 1);
         }
         return signature;
+    }
+
+    void createCpuUtilizationMeasurement(CPUUtilizationRecord cpuUtilizationRecord) {
+        CpuUtilizationMeasurementDescriptor cpuMeasurement = scannerContext.getStore()
+            .create(CpuUtilizationMeasurementDescriptor.class);
+        cpuMeasurement.setTimestamp(cpuUtilizationRecord.getTimestamp());
+        cpuMeasurement.setHostname(cpuUtilizationRecord.getHostname());
+        cpuMeasurement.setCpuID(cpuUtilizationRecord.getCpuID());
+        cpuMeasurement.setIdle(cpuUtilizationRecord.getIdle());
+        cpuMeasurement.setIrq(cpuUtilizationRecord.getIrq());
+        cpuMeasurement.setNice(cpuUtilizationRecord.getNice());
+        cpuMeasurement.setSystem(cpuUtilizationRecord.getSystem());
+        cpuMeasurement.setTotalUtilization(cpuUtilizationRecord.getTotalUtilization());
+        cpuMeasurement.setWait(cpuUtilizationRecord.getWait());
+
+        recordDescriptor.getMeasurements().add(cpuMeasurement);
+    }
+
+    void createDiskUsageMeasurement(DiskUsageRecord diskUsageRecord) {
+        DiskUsageMeasurementDescriptor diskMeasurement = scannerContext.getStore()
+            .create(DiskUsageMeasurementDescriptor.class);
+        diskMeasurement.setTimestamp(diskUsageRecord.getTimestamp());
+        diskMeasurement.setHostname(diskUsageRecord.getHostname());
+        diskMeasurement.setDeviceName(diskUsageRecord.getDeviceName());
+        diskMeasurement.setQueue(diskUsageRecord.getQueue());
+        diskMeasurement.setReadBytesPerSecond(diskUsageRecord.getReadBytesPerSecond());
+        diskMeasurement.setReadsPerSecond(diskUsageRecord.getReadsPerSecond());
+        diskMeasurement.setServiceTime(diskUsageRecord.getServiceTime());
+        diskMeasurement.setWriteBytesPerSecond(diskUsageRecord.getServiceTime());
+        diskMeasurement.setWritesPerSecond(diskUsageRecord.getWritesPerSecond());
+
+        recordDescriptor.getMeasurements().add(diskMeasurement);
+    }
+
+    void createLoadAverageMeasurement(LoadAverageRecord loadAverageRecord) {
+        LoadAverageMeasurementDescriptor loadMeasurement = scannerContext.getStore()
+            .create(LoadAverageMeasurementDescriptor.class);
+        loadMeasurement.setTimestamp(loadAverageRecord.getTimestamp());
+        loadMeasurement.setHostname(loadAverageRecord.getHostname());
+        loadMeasurement.setLoadAverage15min(loadAverageRecord.getFifteenMinLoadAverage());
+        loadMeasurement.setLoadAverage5min(loadAverageRecord.getFiveMinLoadAverage());
+        loadMeasurement.setLoadAverage1min(loadAverageRecord.getOneMinLoadAverage());
+
+        recordDescriptor.getMeasurements().add(loadMeasurement);
+    }
+
+    void createMemSwapUsageMeasurement(MemSwapUsageRecord memSwapUsageRecord) {
+        MemSwapUsageMeasurementDescriptor memMeasurement = scannerContext.getStore()
+            .create(MemSwapUsageMeasurementDescriptor.class);
+        memMeasurement.setTimestamp(memSwapUsageRecord.getTimestamp());
+        memMeasurement.setHostname(memSwapUsageRecord.getHostname());
+        memMeasurement.setMemFree(memSwapUsageRecord.getMemFree());
+        memMeasurement.setMemTotal(memSwapUsageRecord.getMemTotal());
+        memMeasurement.setMemUsed(memSwapUsageRecord.getMemUsed());
+        memMeasurement.setSwapFree(memSwapUsageRecord.getSwapFree());
+        memMeasurement.setSwapTotal(memSwapUsageRecord.getSwapTotal());
+        memMeasurement.setSwapUsed(memSwapUsageRecord.getSwapUsed());
+
+        recordDescriptor.getMeasurements().add(memMeasurement);
+    }
+
+    void createNetworkUtilizationMeasurement(NetworkUtilizationRecord networkUtilizationRecord) {
+        NetworkUtilizationMeasurementDescriptor networkMeasurement = scannerContext.getStore()
+            .create(NetworkUtilizationMeasurementDescriptor.class);
+        networkMeasurement.setTimestamp(networkUtilizationRecord.getTimestamp());
+        networkMeasurement.setHostname(networkUtilizationRecord.getHostname());
+        networkMeasurement.setInterfaceName(networkUtilizationRecord.getInterfaceName());
+        networkMeasurement.setRxBytesPerSecond(networkUtilizationRecord.getRxBytesPerSecond());
+        networkMeasurement.setRxDroppedPerSecond(networkUtilizationRecord.getRxDroppedPerSecond());
+        networkMeasurement.setRxErrorsPerSecond(networkUtilizationRecord.getRxErrorsPerSecond());
+        networkMeasurement.setRxFramePerSecond(networkUtilizationRecord.getRxFramePerSecond());
+        networkMeasurement.setRxOverrunsPerSecond(networkUtilizationRecord.getRxOverrunsPerSecond());
+        networkMeasurement.setRxPacketsPerSecond(networkUtilizationRecord.getRxPacketsPerSecond());
+        networkMeasurement.setSpeed(networkUtilizationRecord.getSpeed());
+        networkMeasurement.setTxBytesPerSecond(networkUtilizationRecord.getTxBytesPerSecond());
+        networkMeasurement.setTxCarrierPerSecond(networkUtilizationRecord.getTxCarrierPerSecond());
+        networkMeasurement.setTxCollisionsPerSecond(networkUtilizationRecord.getTxCollisionsPerSecond());
+        networkMeasurement.setTxDroppedPerSecond(networkUtilizationRecord.getTxDroppedPerSecond());
+        networkMeasurement.setTxErrorsPerSecond(networkUtilizationRecord.getTxErrorsPerSecond());
+        networkMeasurement.setTxOverrunsPerSecond(networkUtilizationRecord.getTxOverrunsPerSecond());
+        networkMeasurement.setTxPacketsPerSecond(networkUtilizationRecord.getTxPacketsPerSecond());
+
+        recordDescriptor.getMeasurements().add(networkMeasurement);
     }
 
 //    private void addCall(MethodDescriptor callerMethod, MethodDescriptor calleeMethod, String callerTypeFqn, String calleeTypeFqn) {

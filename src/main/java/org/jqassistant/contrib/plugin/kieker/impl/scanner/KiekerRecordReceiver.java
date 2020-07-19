@@ -37,16 +37,16 @@ public class KiekerRecordReceiver implements IMonitoringRecordReceiver {
         } else if (iMonitoringRecord instanceof TraceMetadata) {
             kiekerHelper.createTrace((TraceMetadata) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof CPUUtilizationRecord) {
-            kiekerHelper.createCpuUtilizationRecord((CPUUtilizationRecord) iMonitoringRecord);
-        } /*else if (iMonitoringRecord instanceof DiskUsageRecord) {
-
+            kiekerHelper.createCpuUtilizationMeasurement((CPUUtilizationRecord) iMonitoringRecord);
+        } else if (iMonitoringRecord instanceof DiskUsageRecord) {
+            kiekerHelper.createDiskUsageMeasurement((DiskUsageRecord) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof LoadAverageRecord) {
-
+            kiekerHelper.createLoadAverageMeasurement((LoadAverageRecord) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof MemSwapUsageRecord) {
-
+            kiekerHelper.createMemSwapUsageMeasurement((MemSwapUsageRecord) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof NetworkUtilizationRecord) {
-
-        }*/ else if (iMonitoringRecord instanceof AbstractOperationEvent) {
+            kiekerHelper.createNetworkUtilizationMeasurement((NetworkUtilizationRecord) iMonitoringRecord);
+        } else if (iMonitoringRecord instanceof AbstractOperationEvent) {
             kiekerHelper.createEvent((AbstractOperationEvent) iMonitoringRecord);
         }
         return true;
