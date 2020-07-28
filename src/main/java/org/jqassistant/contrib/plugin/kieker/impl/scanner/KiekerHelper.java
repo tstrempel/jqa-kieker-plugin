@@ -240,7 +240,7 @@ public class KiekerHelper {
         diskMeasurement.setReadBytesPerSecond(diskUsageRecord.getReadBytesPerSecond());
         diskMeasurement.setReadsPerSecond(diskUsageRecord.getReadsPerSecond());
         diskMeasurement.setServiceTime(diskUsageRecord.getServiceTime());
-        diskMeasurement.setWriteBytesPerSecond(diskUsageRecord.getServiceTime());
+        diskMeasurement.setWriteBytesPerSecond(diskUsageRecord.getWriteBytesPerSecond());
         diskMeasurement.setWritesPerSecond(diskUsageRecord.getWritesPerSecond());
 
         recordDescriptor.getMeasurements().add(diskMeasurement);
