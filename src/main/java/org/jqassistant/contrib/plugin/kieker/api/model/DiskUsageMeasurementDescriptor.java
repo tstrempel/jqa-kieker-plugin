@@ -6,6 +6,7 @@ import com.buschmais.xo.neo4j.api.annotation.Label;
 @Label("DiskUsageMeasurement")
 public interface DiskUsageMeasurementDescriptor extends NamedDescriptor, MeasurementDescriptor {
 
+    // String/Path -> handle unescaped backslashes
     void setDeviceName(String deviceName);
 
     String getDeviceName();

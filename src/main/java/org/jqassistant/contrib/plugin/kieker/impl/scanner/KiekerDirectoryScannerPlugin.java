@@ -6,14 +6,24 @@ import com.buschmais.jqassistant.core.scanner.api.ScannerPlugin;
 import com.buschmais.jqassistant.core.scanner.api.Scope;
 import com.buschmais.jqassistant.plugin.common.api.model.DirectoryDescriptor;
 import com.buschmais.jqassistant.plugin.common.api.scanner.AbstractDirectoryScannerPlugin;
+import kieker.analysis.plugin.reader.filesystem.FSReader;
 import kieker.analysisteetime.plugin.reader.filesystem.fsReader.FSDirectoryReader;
 import kieker.common.util.filesystem.FSUtil;
+import org.jqassistant.contrib.plugin.kieker.api.model.CpuUtilizationMeasurementDescriptor;
+import org.jqassistant.contrib.plugin.kieker.api.model.DiskUsageMeasurementDescriptor;
 import org.jqassistant.contrib.plugin.kieker.api.model.RecordDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ScannerPlugin.Requires(DirectoryDescriptor.class)
 public class KiekerDirectoryScannerPlugin extends AbstractDirectoryScannerPlugin<RecordDescriptor> {
@@ -45,9 +55,22 @@ public class KiekerDirectoryScannerPlugin extends AbstractDirectoryScannerPlugin
     protected RecordDescriptor getContainerDescriptor(File container, ScannerContext scannerContext) {
         LOGGER.info("Kieker plugin scans records in '{}'", container.getAbsolutePath());
 
+//        try {
+//            Path path = Paths.get(container.getAbsolutePath());
+//            System.out.println(container.getAbsolutePath());
+//            String content = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+//            content = content.replaceAll("\\.", Matcher.quoteReplacement("\\"));
+//            Files.write(path, content.getBytes(StandardCharsets.UTF_8));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
         // Get store, and record descriptor from scanner
         final DirectoryDescriptor directoryDescriptor = scannerContext.getCurrentDescriptor();
-        final RecordDescriptor recordDescriptor = scannerContext.getStore().addDescriptorType(directoryDescriptor, RecordDescriptor.class);
+        final RecordDescriptor recordDescriptor = scannerContext.getStore()
+            .addDescriptorType(directoryDescriptor, RecordDescriptor.class);
+        scannerContext.getStore().create(CpuUtilizationMeasurementDescriptor.class);
+        scannerContext.getStore().create(DiskUsageMeasurementDescriptor.class);
 
         // Set record receiver that maps read records to corresponding descriptors
         KiekerRecordReceiver kiekerRecordReceiver = new KiekerRecordReceiver(new KiekerHelper(scannerContext, recordDescriptor));
@@ -56,6 +79,8 @@ public class KiekerDirectoryScannerPlugin extends AbstractDirectoryScannerPlugin
         // Todo use another reader
         FSDirectoryReader fsDirectoryReader = new FSDirectoryReader(container, kiekerRecordReceiver, true);
         fsDirectoryReader.run();
+
+        // FSReader fsReader = new FSReader(container, kiekerRecordReceiver);
 
         return recordDescriptor;
     }
