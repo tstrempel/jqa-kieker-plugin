@@ -13,6 +13,7 @@ import kieker.analysis.exception.AnalysisConfigurationException;
 import kieker.analysis.plugin.annotation.InputPort;
 import kieker.analysis.plugin.annotation.Plugin;
 import kieker.analysis.plugin.filter.AbstractFilterPlugin;
+import kieker.analysis.plugin.filter.forward.ListCollectionFilter;
 import kieker.analysis.plugin.filter.forward.TeeFilter;
 import kieker.analysis.plugin.reader.filesystem.FSReader;
 import kieker.analysisteetime.plugin.reader.filesystem.fsReader.FSDirectoryReader;
@@ -88,22 +89,10 @@ public class KiekerDirectoryScannerPlugin extends AbstractDirectoryScannerPlugin
             .addDescriptorType(directoryDescriptor, RecordDescriptor.class);
         final KiekerHelper kiekerHelper = new KiekerHelper(scannerContext, recordDescriptor);
 
-//        // Set record receiver that maps read records to corresponding descriptors
-//        KiekerRecordReceiver kiekerRecordReceiver = new KiekerRecordReceiver(new KiekerHelper(scannerContext, recordDescriptor));
-//
-//        // Set filesystem directory reader (reads *.map, *.dat, *.bin, *.xz files in a directory)
-//        // Todo use another reader
-//        FSDirectoryReader fsDirectoryReader = new FSDirectoryReader(container, kiekerRecordReceiver, true);
-//        fsDirectoryReader.run();
-
-
         IAnalysisController analysisController = new AnalysisController();
-
         Configuration fsReaderConfig = new Configuration();
         fsReaderConfig.setProperty(FSReader.CONFIG_PROPERTY_NAME_INPUTDIRS,
             Paths.get(container.getAbsolutePath()).normalize().toString());
-//        final String[] inputDirs = { args[0] };
-//        readerConfiguration.setProperty(FSReader.CONFIG_PROPERTY_NAME_INPUTDIRS, Configuration.toProperty(inputDirs));
         FSReader fsReader = new FSReader(fsReaderConfig, analysisController);
 
         Configuration teeFilterConfig = new Configuration();
@@ -111,16 +100,40 @@ public class KiekerDirectoryScannerPlugin extends AbstractDirectoryScannerPlugin
             TeeFilter.CONFIG_PROPERTY_VALUE_STREAM_STDOUT);
         TeeFilter teeFilter = new TeeFilter(teeFilterConfig, analysisController);
 
-        final RecordConsumer consumer = new RecordConsumer(new Configuration(), analysisController, kiekerHelper);
+        ListCollectionFilter<Object> listCollectionFilter = new ListCollectionFilter<>(new Configuration(), analysisController);
+
+        final RecordConsumer consumer = new RecordConsumer(new Configuration(), analysisController,
+            kiekerHelper);
 
         try {
-            // analysisController.connect(fsReader, FSReader.OUTPUT_PORT_NAME_RECORDS, teeFilter, TeeFilter.INPUT_PORT_NAME_EVENTS);
-            analysisController.connect(fsReader, FSReader.OUTPUT_PORT_NAME_RECORDS, consumer, RecordConsumer.INPUT_PORT_NAME);
+            //analysisController.connect(fsReader, FSReader.OUTPUT_PORT_NAME_RECORDS, teeFilter, TeeFilter.INPUT_PORT_NAME_EVENTS);
+            //analysisController.connect(fsReader, FSReader.OUTPUT_PORT_NAME_RECORDS, consumer, RecordConsumer.INPUT_PORT_NAME);
+            analysisController.connect(fsReader, FSReader.OUTPUT_PORT_NAME_RECORDS, listCollectionFilter, ListCollectionFilter.INPUT_PORT_NAME);
             analysisController.run();
         } catch (AnalysisConfigurationException e) {
             e.printStackTrace();
         }
 
+        LOGGER.info("Read {} entries", listCollectionFilter.getList().size());
+        for (Object iMonitoringRecord : listCollectionFilter.getList()) {
+            if (iMonitoringRecord instanceof KiekerMetadataRecord) {
+                kiekerHelper.createRecord((KiekerMetadataRecord) iMonitoringRecord);
+            } else if (iMonitoringRecord instanceof TraceMetadata) {
+                kiekerHelper.createTrace((TraceMetadata) iMonitoringRecord);
+            } else if (iMonitoringRecord instanceof CPUUtilizationRecord) {
+                kiekerHelper.createCpuUtilizationMeasurement((CPUUtilizationRecord) iMonitoringRecord);
+            } else if (iMonitoringRecord instanceof DiskUsageRecord) {
+                kiekerHelper.createDiskUsageMeasurement((DiskUsageRecord) iMonitoringRecord);
+            } else if (iMonitoringRecord instanceof LoadAverageRecord) {
+                kiekerHelper.createLoadAverageMeasurement((LoadAverageRecord) iMonitoringRecord);
+            } else if (iMonitoringRecord instanceof MemSwapUsageRecord) {
+                kiekerHelper.createMemSwapUsageMeasurement((MemSwapUsageRecord) iMonitoringRecord);
+            } else if (iMonitoringRecord instanceof NetworkUtilizationRecord) {
+                kiekerHelper.createNetworkUtilizationMeasurement((NetworkUtilizationRecord) iMonitoringRecord);
+            } else if (iMonitoringRecord instanceof AbstractOperationEvent) {
+                kiekerHelper.createEvent((AbstractOperationEvent) iMonitoringRecord);
+            }
+        }
 
 /*
         String[] str = new String[1];

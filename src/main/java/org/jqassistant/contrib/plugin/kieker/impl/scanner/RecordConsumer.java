@@ -11,6 +11,7 @@ import kieker.common.record.flow.trace.operation.AbstractOperationEvent;
 import kieker.common.record.misc.KiekerMetadataRecord;
 import kieker.common.record.system.*;
 
+// todo: use this instead of ListCollectionFilter
 @Plugin
 class RecordConsumer extends AbstractFilterPlugin {
 
@@ -26,25 +27,24 @@ class RecordConsumer extends AbstractFilterPlugin {
         name = RecordConsumer.INPUT_PORT_NAME,
         eventTypes = { IMonitoringRecord.class }
     )
-    public void newMonitoringRecord(Object iMonitoringRecord) {
+    public void newMonitoringRecord(final IMonitoringRecord iMonitoringRecord) {
         if (iMonitoringRecord instanceof KiekerMetadataRecord) {
             kiekerHelper.createRecord((KiekerMetadataRecord) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof TraceMetadata) {
-
+            kiekerHelper.createTrace((TraceMetadata) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof CPUUtilizationRecord) {
             kiekerHelper.createCpuUtilizationMeasurement((CPUUtilizationRecord) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof DiskUsageRecord) {
-
+            kiekerHelper.createDiskUsageMeasurement((DiskUsageRecord) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof LoadAverageRecord) {
-
+            kiekerHelper.createLoadAverageMeasurement((LoadAverageRecord) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof MemSwapUsageRecord) {
-
+            kiekerHelper.createMemSwapUsageMeasurement((MemSwapUsageRecord) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof NetworkUtilizationRecord) {
-
+            kiekerHelper.createNetworkUtilizationMeasurement((NetworkUtilizationRecord) iMonitoringRecord);
         } else if (iMonitoringRecord instanceof AbstractOperationEvent) {
-
+            kiekerHelper.createEvent((AbstractOperationEvent) iMonitoringRecord);
         }
-
     }
 
     @Override
