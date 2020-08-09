@@ -66,8 +66,13 @@
                             <artifact>net.kieker-monitoring:kieker</artifact>
                             <includes>
                                 <include>kieker/analysisteetime/*/**</include>
-                                <include>kieker/analysis/plugin/*/**</include>
+                                <!-- <include>kieker/analysis/plugin/*/**</include> -->
                                 <include>kieker/common/*/**</include>
+                                <!-- includes to use FSReader
+                                <include>kieker/analysis/*</include>
+                                <include>kieker/analysis/analysisComponent/*/**</include>
+                                <include>kieker/analysis/exception/*/**</include> -->
+                                <include>kieker/analysis/*/**</include>
                             </includes>
                         </filter>
                     </filters>
