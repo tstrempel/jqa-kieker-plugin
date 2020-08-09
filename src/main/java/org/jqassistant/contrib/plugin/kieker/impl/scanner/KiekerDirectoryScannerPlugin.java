@@ -8,28 +8,16 @@ import com.buschmais.jqassistant.plugin.common.api.model.DirectoryDescriptor;
 import com.buschmais.jqassistant.plugin.common.api.scanner.AbstractDirectoryScannerPlugin;
 import kieker.analysis.AnalysisController;
 import kieker.analysis.IAnalysisController;
-import kieker.analysis.IProjectContext;
 import kieker.analysis.exception.AnalysisConfigurationException;
-import kieker.analysis.plugin.annotation.InputPort;
-import kieker.analysis.plugin.annotation.Plugin;
-import kieker.analysis.plugin.filter.AbstractFilterPlugin;
 import kieker.analysis.plugin.filter.forward.ListCollectionFilter;
-import kieker.analysis.plugin.filter.forward.TeeFilter;
 import kieker.analysis.plugin.reader.filesystem.FSReader;
-import kieker.analysisteetime.plugin.reader.filesystem.fsReader.FSDirectoryReader;
 import kieker.common.configuration.Configuration;
-import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.flow.trace.TraceMetadata;
 import kieker.common.record.flow.trace.operation.AbstractOperationEvent;
 import kieker.common.record.misc.KiekerMetadataRecord;
 import kieker.common.record.system.*;
 import kieker.common.util.filesystem.FSUtil;
 import org.jqassistant.contrib.plugin.kieker.api.model.RecordDescriptor;
-import org.neo4j.driver.Driver;
-import org.neo4j.driver.GraphDatabase;
-import org.neo4j.driver.Session;
-import org.neo4j.driver.Transaction;
-import org.neo4j.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,31 +77,23 @@ public class KiekerDirectoryScannerPlugin extends AbstractDirectoryScannerPlugin
             .addDescriptorType(directoryDescriptor, RecordDescriptor.class);
         final KiekerHelper kiekerHelper = new KiekerHelper(scannerContext, recordDescriptor);
 
+        // Create and configure the FSReader to read the files in the specified directory
         IAnalysisController analysisController = new AnalysisController();
         Configuration fsReaderConfig = new Configuration();
         fsReaderConfig.setProperty(FSReader.CONFIG_PROPERTY_NAME_INPUTDIRS,
             Paths.get(container.getAbsolutePath()).normalize().toString());
         FSReader fsReader = new FSReader(fsReaderConfig, analysisController);
 
-        Configuration teeFilterConfig = new Configuration();
-        teeFilterConfig.setProperty(TeeFilter.CONFIG_PROPERTY_NAME_STREAM,
-            TeeFilter.CONFIG_PROPERTY_VALUE_STREAM_STDOUT);
-        TeeFilter teeFilter = new TeeFilter(teeFilterConfig, analysisController);
-
+        // Use ListCollectionFilter to get the list of read records
         ListCollectionFilter<Object> listCollectionFilter = new ListCollectionFilter<>(new Configuration(), analysisController);
-
-        final RecordConsumer consumer = new RecordConsumer(new Configuration(), analysisController,
-            kiekerHelper);
-
         try {
-            //analysisController.connect(fsReader, FSReader.OUTPUT_PORT_NAME_RECORDS, teeFilter, TeeFilter.INPUT_PORT_NAME_EVENTS);
-            //analysisController.connect(fsReader, FSReader.OUTPUT_PORT_NAME_RECORDS, consumer, RecordConsumer.INPUT_PORT_NAME);
             analysisController.connect(fsReader, FSReader.OUTPUT_PORT_NAME_RECORDS, listCollectionFilter, ListCollectionFilter.INPUT_PORT_NAME);
             analysisController.run();
         } catch (AnalysisConfigurationException e) {
             e.printStackTrace();
         }
 
+        // Add records to RecordDescriptor
         LOGGER.info("Read {} entries", listCollectionFilter.getList().size());
         for (Object iMonitoringRecord : listCollectionFilter.getList()) {
             if (iMonitoringRecord instanceof KiekerMetadataRecord) {
@@ -134,60 +114,6 @@ public class KiekerDirectoryScannerPlugin extends AbstractDirectoryScannerPlugin
                 kiekerHelper.createEvent((AbstractOperationEvent) iMonitoringRecord);
             }
         }
-
-/*
-        String[] str = new String[1];
-        str[0] = Paths.get(container.getAbsolutePath()).normalize().toString();
-
-        config.setStringArrayProperty("CONFIG_PROPERTY_NAME_INPUTDIRS", str);
-        // config.setProperty("CONFIG_PROPERTY_NAME_INPUTDIRS", Paths.get(container.getAbsolutePath()).normalize().toString());
-        config.setProperty("CONFIG_PROPERTY_NAME_IGNORE_UNKNOWN_RECORD_TYPES", true);
-
-        LOGGER.info("'{}'", Paths.get(container.getAbsolutePath()).normalize().toString());
-        // LOGGER.info("'{}'", config.getPathProperty("CONFIG_PROPERTY_NAME_INPUTDIRS"));
-        LOGGER.info("'{}'", config.getStringArrayProperty("CONFIG_PROPERTY_NAME_INPUTDIRS"));
-
-
-
-
-
-        AnalysisController analysisController = new AnalysisController(config);
-        // analysisController.connect(this, );
-//        try {
-//            analysisController.run();
-//        } catch (AnalysisConfigurationException e) {
-//            e.printStackTrace();
-//        }
-        FSReader fsReader = new FSReader(config, analysisController) {
-            @Override
-            public boolean newMonitoringRecord(IMonitoringRecord iMonitoringRecord) {
-                if (iMonitoringRecord instanceof KiekerMetadataRecord) {
-                    kiekerHelper.createRecord((KiekerMetadataRecord) iMonitoringRecord);
-                } else if (iMonitoringRecord instanceof TraceMetadata) {
-                    kiekerHelper.createTrace((TraceMetadata) iMonitoringRecord);
-                } else if (iMonitoringRecord instanceof CPUUtilizationRecord) {
-                    kiekerHelper.createCpuUtilizationMeasurement((CPUUtilizationRecord) iMonitoringRecord);
-                } else if (iMonitoringRecord instanceof DiskUsageRecord) {
-                    kiekerHelper.createDiskUsageMeasurement((DiskUsageRecord) iMonitoringRecord);
-                } else if (iMonitoringRecord instanceof LoadAverageRecord) {
-                    kiekerHelper.createLoadAverageMeasurement((LoadAverageRecord) iMonitoringRecord);
-                } else if (iMonitoringRecord instanceof MemSwapUsageRecord) {
-                    kiekerHelper.createMemSwapUsageMeasurement((MemSwapUsageRecord) iMonitoringRecord);
-                } else if (iMonitoringRecord instanceof NetworkUtilizationRecord) {
-                    kiekerHelper.createNetworkUtilizationMeasurement((NetworkUtilizationRecord) iMonitoringRecord);
-                } else if (iMonitoringRecord instanceof AbstractOperationEvent) {
-                    kiekerHelper.createEvent((AbstractOperationEvent) iMonitoringRecord);
-                }
-                return true;
-            }
-        };
-
-        LOGGER.info("'{}'", fsReader.getCurrentConfiguration().getStringArrayProperty("CONFIG_PROPERTY_NAME_INPUTDIRS"));
-
-        //LOGGER.info("'{}'", config.getPathProperty("CONFIG_PROPERTY_NAME_INPUTDIRS"));
-        //LOGGER.info("'{}'", config.getStringProperty("CONFIG_PROPERTY_NAME_INPUTDIRS"));
-        LOGGER.info("'{}'", fsReader.getCurrentConfiguration().getBooleanProperty("CONFIG_PROPERTY_NAME_IGNORE_UNKNOWN_RECORD_TYPES"));
-        fsReader.read();*/
 
         return recordDescriptor;
     }
