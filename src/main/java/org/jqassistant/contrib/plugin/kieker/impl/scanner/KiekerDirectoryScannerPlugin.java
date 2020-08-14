@@ -101,15 +101,15 @@ public class KiekerDirectoryScannerPlugin extends AbstractDirectoryScannerPlugin
             } else if (iMonitoringRecord instanceof TraceMetadata) {
                 kiekerHelper.createTrace((TraceMetadata) iMonitoringRecord);
             } else if (iMonitoringRecord instanceof CPUUtilizationRecord) {
-                kiekerHelper.createCpuUtilizationMeasurement((CPUUtilizationRecord) iMonitoringRecord);
+                kiekerHelper.createCpuUtilizationRecord((CPUUtilizationRecord) iMonitoringRecord);
             } else if (iMonitoringRecord instanceof DiskUsageRecord) {
-                kiekerHelper.createDiskUsageMeasurement((DiskUsageRecord) iMonitoringRecord);
+                kiekerHelper.createDiskUsageRecord((DiskUsageRecord) iMonitoringRecord);
             } else if (iMonitoringRecord instanceof LoadAverageRecord) {
-                kiekerHelper.createLoadAverageMeasurement((LoadAverageRecord) iMonitoringRecord);
+                kiekerHelper.createLoadAverageRecord((LoadAverageRecord) iMonitoringRecord);
             } else if (iMonitoringRecord instanceof MemSwapUsageRecord) {
-                kiekerHelper.createMemSwapUsageMeasurement((MemSwapUsageRecord) iMonitoringRecord);
+                kiekerHelper.createMemSwapUsageRecord((MemSwapUsageRecord) iMonitoringRecord);
             } else if (iMonitoringRecord instanceof NetworkUtilizationRecord) {
-                kiekerHelper.createNetworkUtilizationMeasurement((NetworkUtilizationRecord) iMonitoringRecord);
+                kiekerHelper.createNetworkUtilizationRecord((NetworkUtilizationRecord) iMonitoringRecord);
             } else if (iMonitoringRecord instanceof AbstractOperationEvent) {
                 kiekerHelper.createEvent((AbstractOperationEvent) iMonitoringRecord);
             }

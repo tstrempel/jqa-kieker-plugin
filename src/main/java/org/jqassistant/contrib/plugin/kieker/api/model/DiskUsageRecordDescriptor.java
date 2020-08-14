@@ -3,8 +3,8 @@ package org.jqassistant.contrib.plugin.kieker.api.model;
 import com.buschmais.jqassistant.plugin.common.api.model.NamedDescriptor;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 
-@Label("DiskUsageMeasurement")
-public interface DiskUsageMeasurementDescriptor extends NamedDescriptor, MeasurementDescriptor {
+@Label("DiskUsageRecord")
+public interface DiskUsageRecordDescriptor extends NamedDescriptor, SystemPerformanceRecordDescriptor {
 
     // String/Path -> handle unescaped backslashes
     void setDeviceName(String deviceName);

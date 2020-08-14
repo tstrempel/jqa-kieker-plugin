@@ -11,12 +11,12 @@
         <class>org.jqassistant.contrib.plugin.kieker.api.model.CallEventDescriptor</class>
         <class>org.jqassistant.contrib.plugin.kieker.api.model.ExecutionEventDescriptor</class>
         <class>org.jqassistant.contrib.plugin.kieker.api.model.PackageDescriptor</class>
-        <class>org.jqassistant.contrib.plugin.kieker.api.model.MeasurementDescriptor</class>
-        <class>org.jqassistant.contrib.plugin.kieker.api.model.CpuUtilizationMeasurementDescriptor</class>
-        <class>org.jqassistant.contrib.plugin.kieker.api.model.DiskUsageMeasurementDescriptor</class>
-        <class>org.jqassistant.contrib.plugin.kieker.api.model.LoadAverageMeasurementDescriptor</class>
-        <class>org.jqassistant.contrib.plugin.kieker.api.model.MemSwapUsageMeasurementDescriptor</class>
-        <class>org.jqassistant.contrib.plugin.kieker.api.model.NetworkUtilizationMeasurementDescriptor</class>
+        <class>org.jqassistant.contrib.plugin.kieker.api.model.SystemPerformanceRecordDescriptor</class>
+        <class>org.jqassistant.contrib.plugin.kieker.api.model.CpuUtilizationRecordDescriptor</class>
+        <class>org.jqassistant.contrib.plugin.kieker.api.model.DiskUsageRecordDescriptor</class>
+        <class>org.jqassistant.contrib.plugin.kieker.api.model.LoadAverageRecordDescriptor</class>
+        <class>org.jqassistant.contrib.plugin.kieker.api.model.MemSwapUsageRecordDescriptor</class>
+        <class>org.jqassistant.contrib.plugin.kieker.api.model.NetworkUtilizationRecordDescriptor</class>
     </model>
     <scanner>
         <class>org.jqassistant.contrib.plugin.kieker.impl.scanner.KiekerDirectoryScannerPlugin</class>

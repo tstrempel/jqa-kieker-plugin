@@ -3,8 +3,8 @@ package org.jqassistant.contrib.plugin.kieker.api.model;
 import com.buschmais.jqassistant.plugin.common.api.model.NamedDescriptor;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 
-@Label("MemSwapUsageMeasurement")
-public interface MemSwapUsageMeasurementDescriptor extends NamedDescriptor, MeasurementDescriptor {
+@Label("MemSwapUsageRecord")
+public interface MemSwapUsageRecordDescriptor extends NamedDescriptor, SystemPerformanceRecordDescriptor {
 
     void setMemFree(long memFree);
 

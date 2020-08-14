@@ -214,9 +214,9 @@ public class KiekerHelper {
         return signature;
     }
 
-    void createCpuUtilizationMeasurement(CPUUtilizationRecord cpuUtilizationRecord) {
-        CpuUtilizationMeasurementDescriptor cpuMeasurement = scannerContext.getStore()
-            .create(CpuUtilizationMeasurementDescriptor.class);
+    void createCpuUtilizationRecord(CPUUtilizationRecord cpuUtilizationRecord) {
+        CpuUtilizationRecordDescriptor cpuMeasurement = scannerContext.getStore()
+            .create(CpuUtilizationRecordDescriptor.class);
         cpuMeasurement.setTimestamp(cpuUtilizationRecord.getTimestamp());
         cpuMeasurement.setHostname(cpuUtilizationRecord.getHostname());
         cpuMeasurement.setCpuID(cpuUtilizationRecord.getCpuID());
@@ -230,9 +230,9 @@ public class KiekerHelper {
         recordDescriptor.getMeasurements().add(cpuMeasurement);
     }
 
-    void createDiskUsageMeasurement(DiskUsageRecord diskUsageRecord) {
-        DiskUsageMeasurementDescriptor diskMeasurement = scannerContext.getStore()
-            .create(DiskUsageMeasurementDescriptor.class);
+    void createDiskUsageRecord(DiskUsageRecord diskUsageRecord) {
+        DiskUsageRecordDescriptor diskMeasurement = scannerContext.getStore()
+            .create(DiskUsageRecordDescriptor.class);
         diskMeasurement.setTimestamp(diskUsageRecord.getTimestamp());
         diskMeasurement.setHostname(diskUsageRecord.getHostname());
         diskMeasurement.setDeviceName(diskUsageRecord.getDeviceName());
@@ -246,9 +246,9 @@ public class KiekerHelper {
         recordDescriptor.getMeasurements().add(diskMeasurement);
     }
 
-    void createLoadAverageMeasurement(LoadAverageRecord loadAverageRecord) {
-        LoadAverageMeasurementDescriptor loadMeasurement = scannerContext.getStore()
-            .create(LoadAverageMeasurementDescriptor.class);
+    void createLoadAverageRecord(LoadAverageRecord loadAverageRecord) {
+        LoadAverageRecordDescriptor loadMeasurement = scannerContext.getStore()
+            .create(LoadAverageRecordDescriptor.class);
         loadMeasurement.setTimestamp(loadAverageRecord.getTimestamp());
         loadMeasurement.setHostname(loadAverageRecord.getHostname());
         loadMeasurement.setLoadAverage15min(loadAverageRecord.getFifteenMinLoadAverage());
@@ -258,9 +258,9 @@ public class KiekerHelper {
         recordDescriptor.getMeasurements().add(loadMeasurement);
     }
 
-    void createMemSwapUsageMeasurement(MemSwapUsageRecord memSwapUsageRecord) {
-        MemSwapUsageMeasurementDescriptor memMeasurement = scannerContext.getStore()
-            .create(MemSwapUsageMeasurementDescriptor.class);
+    void createMemSwapUsageRecord(MemSwapUsageRecord memSwapUsageRecord) {
+        MemSwapUsageRecordDescriptor memMeasurement = scannerContext.getStore()
+            .create(MemSwapUsageRecordDescriptor.class);
         memMeasurement.setTimestamp(memSwapUsageRecord.getTimestamp());
         memMeasurement.setHostname(memSwapUsageRecord.getHostname());
         memMeasurement.setMemFree(memSwapUsageRecord.getMemFree());
@@ -273,9 +273,9 @@ public class KiekerHelper {
         recordDescriptor.getMeasurements().add(memMeasurement);
     }
 
-    void createNetworkUtilizationMeasurement(NetworkUtilizationRecord networkUtilizationRecord) {
-        NetworkUtilizationMeasurementDescriptor networkMeasurement = scannerContext.getStore()
-            .create(NetworkUtilizationMeasurementDescriptor.class);
+    void createNetworkUtilizationRecord(NetworkUtilizationRecord networkUtilizationRecord) {
+        NetworkUtilizationRecordDescriptor networkMeasurement = scannerContext.getStore()
+            .create(NetworkUtilizationRecordDescriptor.class);
         networkMeasurement.setTimestamp(networkUtilizationRecord.getTimestamp());
         networkMeasurement.setHostname(networkUtilizationRecord.getHostname());
         networkMeasurement.setInterfaceName(networkUtilizationRecord.getInterfaceName());

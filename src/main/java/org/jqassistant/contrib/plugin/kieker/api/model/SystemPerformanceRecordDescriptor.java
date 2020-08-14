@@ -2,8 +2,8 @@ package org.jqassistant.contrib.plugin.kieker.api.model;
 
 import com.buschmais.xo.neo4j.api.annotation.Label;
 
-@Label("Measurement")
-public interface MeasurementDescriptor extends KiekerDescriptor {
+@Label("SystemPerformanceRecord")
+public interface SystemPerformanceRecordDescriptor extends KiekerDescriptor {
 
     void setTimestamp(long timestamp);
 
