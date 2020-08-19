@@ -84,6 +84,18 @@ public class KiekerDirectoryScannerPlugin extends AbstractDirectoryScannerPlugin
             Paths.get(container.getAbsolutePath()).normalize().toString());
         FSReader fsReader = new FSReader(fsReaderConfig, analysisController);
 
+        /* to reproduce error */
+        RecordConsumer recordConsumer = new RecordConsumer(new Configuration(), analysisController, kiekerHelper);
+
+
+        try {
+            analysisController.connect(fsReader, FSReader.OUTPUT_PORT_NAME_RECORDS, recordConsumer, RecordConsumer.INPUT_PORT_NAME);
+            analysisController.run();
+        } catch (AnalysisConfigurationException e) {
+            e.printStackTrace();
+        }
+
+        /* Working Code
         // Use ListCollectionFilter to get the list of read records
         ListCollectionFilter<Object> listCollectionFilter = new ListCollectionFilter<>(new Configuration(), analysisController);
         try {
@@ -114,6 +126,8 @@ public class KiekerDirectoryScannerPlugin extends AbstractDirectoryScannerPlugin
                 kiekerHelper.createEvent((AbstractOperationEvent) iMonitoringRecord);
             }
         }
+
+         */
 
         return recordDescriptor;
     }
